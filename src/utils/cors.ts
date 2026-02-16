@@ -2,7 +2,7 @@ import { FastifyCorsOptions } from "@fastify/cors";
 
 export const allowedOrigins = [
   "http://localhost:5173",
-  "https://keystonenationalbank.com",
+  "https://keystonenationalvault.com",
 ];
 
 export const corsOptions: FastifyCorsOptions = {

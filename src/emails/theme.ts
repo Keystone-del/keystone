@@ -118,7 +118,7 @@ export const baseEmailTheme = ({ title, previewText, content }: EmailThemeProps)
 
       <p>
         Need help?
-        <a href="mailto:support@keystonenationalbank.com.com">support@keystonenationalbank.com</a>
+        <a href="mailto:support@keystonenationalvault.com">support@keystonenationalvault.com</a>
       </p>
 
       <p>

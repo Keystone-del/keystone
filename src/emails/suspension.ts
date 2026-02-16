@@ -31,7 +31,7 @@ export default ({ name }: { name: string }) => {
     <p>
       If you believe this restriction was applied in error or if you would
       like to request a review, please contact our support team at
-      <a href="mailto:support@keystonenationalbank.com.com">support@keystonenationalbank.com.com</a>.
+      <a href="mailto:support@keystonenationalvault.com.com">support@keystonenationalvault.com.com</a>.
     </p>
 
     <p>
