@@ -4,7 +4,7 @@ import crypto from "crypto";
 export const generateTransactionHash = (): string => {
   const randomData = crypto.randomBytes(256);
   const hash = crypto.createHash("sha256").update(randomData).digest("hex");
-  return "CBUSA" + hash.slice(0, 12);
+  return "KN" + hash.slice(0, 12);
 };
 
 //Generate account number

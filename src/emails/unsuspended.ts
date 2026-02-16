@@ -24,7 +24,7 @@ export default ({ name }: { name: string }) => {
     <p>
       If you experience any issues or have further questions, please contact
       our support team at
-      <a href="mailto:support@atlanticbank.com">support@atlanticbank.com</a>.
+      <a href="mailto:support@keystonenationalvault.com">support@keystonenationalvault.com</a>.
     </p>
 
     <p>

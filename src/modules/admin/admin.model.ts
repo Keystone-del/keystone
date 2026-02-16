@@ -64,7 +64,7 @@ adminSchema.pre("save", async function (next) {
   if (this.isNew && !this.adminId) {
     let isUnique = false;
     while (!isUnique) {
-      const newAdminId = "ADCM" + generateAdminId();
+      const newAdminId = "ADKN" + generateAdminId();
       const existingUser = await AdminModel.findOne({ adminId: newAdminId });
       if (!existingUser) {
         this.adminId = newAdminId;
