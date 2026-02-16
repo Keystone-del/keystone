@@ -176,8 +176,8 @@ export const buildApp = async (): Promise<FastifyInstance> => {
   await registerSavingsCron(app);
 
   // Health Check Endpoint
-  app.get("/healthcheck", async () => {
-    return { status: "OK, everything works." };
+  app.get("/health", async () => {
+    return { status: "OK, health check complete" };
   });
 
   // Global error handler
