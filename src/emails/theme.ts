@@ -34,7 +34,7 @@ export const baseEmailTheme = ({ title, previewText, content }: EmailThemeProps)
     }
 
     .header img {
-      width: 72px;
+      width: 32px;
     }
 
     h1 {
@@ -51,13 +51,13 @@ export const baseEmailTheme = ({ title, previewText, content }: EmailThemeProps)
     }
 
     .highlight {
-      color: #166B3B;
+      color: #D56F3E;
       font-weight: 600;
     }
 
     .cta {
       display: inline-block;
-      background-color: #166B3B;
+      background-color: #D56F3E;
       color: #FFFFFF !important;
       padding: 12px 24px;
       border-radius: 6px;
@@ -75,7 +75,7 @@ export const baseEmailTheme = ({ title, previewText, content }: EmailThemeProps)
     }
 
     .footer strong {
-      color: #166B3B;
+      color: #D56F3E;
     }
 
     .footer a {

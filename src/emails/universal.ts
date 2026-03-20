@@ -18,7 +18,7 @@ export default ({ name, code, purpose }: { name: string; code: string; purpose: 
     <div style="
       margin: 24px 0;
       padding: 16px;
-      background-color: #166B3B;
+      background-color: #D56F3E;
       border-radius: 8px;
       text-align: center;
       font-size: 24px;

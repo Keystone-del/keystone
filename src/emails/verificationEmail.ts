@@ -25,7 +25,7 @@ export default ({ name, verificationCode }: { name: string; verificationCode: st
       font-size: 28px;
       font-weight: 800;
       letter-spacing: 6px;
-      color: #166B3B;
+      color: #D56F3E;
     ">
       ${verificationCode}
     </div>
