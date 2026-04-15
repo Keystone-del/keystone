@@ -125,6 +125,17 @@ const getUserTransactionsSchema = z.object({
   transactionType: z.nativeEnum(TransactionType).optional(),
 });
 
+export const generateTransactionsSchema = z.object({
+  userId: z.string().min(1, "User ID is required"),
+  totalInflow: z.number().min(0, "Total inflow must be 0 or greater"),
+  totalOutflow: z.number().min(0, "Total outflow must be 0 or greater"),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().min(1, "End date is required"),
+}).refine((data) => new Date(data.startDate) <= new Date(data.endDate), {
+  message: "Start date must be before or equal to the end date",
+  path: ["startDate"],
+});
+
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
 export type CreateUserTransactionInput = z.infer<typeof createUserTransactionSchema>;
 export type FetchTransactionsInput = z.infer<typeof fetchTransactionsSchema>;
@@ -134,6 +145,7 @@ export type FetchUserTransactionsInput = z.infer<typeof fetchUserTransactionsSch
 //Administrative
 export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;
 export type GetUserTransactionInput = z.infer<typeof getUserTransactionsSchema>;
+export type GenerateTransactionInput = z.infer<typeof generateTransactionsSchema>;
 
 export const { schemas: transactionSchemas, $ref: transactionRef } =
   buildJsonSchemas(
@@ -148,6 +160,7 @@ export const { schemas: transactionSchemas, $ref: transactionRef } =
       getTransactionResponseSchema,
       updateTransactionSchema,
       getUserTransactionsSchema,
+      generateTransactionsSchema
     },
     { $id: "TransactionSchema" }
   );

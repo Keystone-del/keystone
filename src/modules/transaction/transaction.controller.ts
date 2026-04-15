@@ -2,14 +2,14 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
 
 //Services
-import { createNewTransaction, deleteTransaction, fetchTransactions, getLastFiveTransactions, getTransactionById, getTransactions, getUserBalance, getUserTransactions, updateTransaction } from "./transaction.service";
+import { createNewTransaction, deleteTransaction, fetchTransactions, generateRandomTransactions, getLastFiveTransactions, getTransactionById, getTransactions, getUserBalance, getUserTransactions, updateTransaction } from "./transaction.service";
 import { findUserById } from "../user/user.service";
 import { findAdminById } from "../admin/admin.service";
 import { createBeneficiary, ownBeneficiary } from "../beneficiary/beneficiary.services";
 import { newActivity } from "../activity/activity.services";
 
 //Schemas
-import { CreateTransactionInput, CreateUserTransactionInput, FetchTransactionInput, GetUserTransactionInput, UpdateTransactionInput } from "./transaction.schema";
+import { CreateTransactionInput, CreateUserTransactionInput, FetchTransactionInput, GenerateTransactionInput, GetUserTransactionInput, UpdateTransactionInput } from "./transaction.schema";
 import { PaginationInput } from "../general/general.schema";
 
 //Utils, Enums and Configs
@@ -373,4 +373,22 @@ export const deleteUserTransactionHandler = async (request: FastifyRequest<{ Par
   await newActivity(data);
 
   return sendResponse(reply, 200, true, "Transaction was deleted successfully", deleted);
+};
+
+//Create Random Transactions
+export const generateTransactionsHandler = async (request: FastifyRequest<{ Body: GenerateTransactionInput }>, reply: FastifyReply) => {
+
+  const decodedAdmin = request.admin!;
+
+  //Fetch admin and make sure he is a super admin
+  const admin = await findAdminById(decodedAdmin?._id);
+  if (!admin) return sendResponse(reply, 400, false, "Sorry, but you are not authorized to perform this action");
+  if (admin.role !== "super_admin") return sendResponse(reply, 403, false, "Sorry, you are not authorized enough to perform this action");
+
+  // Now accepting startDate and endDate
+  const { userId, totalInflow, totalOutflow, startDate, endDate } = request.body
+
+  await generateRandomTransactions(userId, totalInflow, totalOutflow, startDate, endDate);
+
+  return sendResponse(reply, 201, true, "Random transaction history generated successfully!")
 };

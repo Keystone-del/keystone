@@ -1,14 +1,15 @@
 import { FastifyInstance } from "fastify";
 
 //Handlers
-import { createNewTransactionHandler, createUserTransactionHandler, deleteUserTransactionHandler, fetchAllTransactionsHandler, fetchAllUserTransactionsHandler, fetchLastTransactionsHandler, fetchPricesHandler, fetchTransactionHandler, fetchUserTransactionHandler, getUserBalanceHandler, updateTransactionHandler, } from "./transaction.controller";
+import { createNewTransactionHandler, createUserTransactionHandler, deleteUserTransactionHandler, fetchAllTransactionsHandler, fetchAllUserTransactionsHandler, fetchLastTransactionsHandler, fetchPricesHandler, fetchTransactionHandler, fetchUserTransactionHandler, generateTransactionsHandler, getUserBalanceHandler, updateTransactionHandler, } from "./transaction.controller";
 
 //Schemas
-import { CreateTransactionInput, CreateUserTransactionInput, FetchTransactionInput, GetUserTransactionInput, transactionRef, UpdateTransactionInput } from "./transaction.schema";
+import { CreateTransactionInput, CreateUserTransactionInput, FetchTransactionInput, GenerateTransactionInput, GetUserTransactionInput, transactionRef, UpdateTransactionInput } from "./transaction.schema";
 import { generalRef, PaginationInput } from "../general/general.schema";
 
 //Transaction Routes
 export default async function transactionRoutes(app: FastifyInstance) {
+
   //Create new transaction
   app.post<{ Body: CreateTransactionInput }>("/create", {
     preHandler: app.authenticate,
@@ -161,5 +162,17 @@ export default async function transactionRoutes(app: FastifyInstance) {
     },
   },
     deleteUserTransactionHandler
+  );
+
+  //Create random transaction
+  app.post<{ Body: GenerateTransactionInput }>("/generate/create", {
+    preHandler: app.authenticateAdmin,
+    schema: {
+      tags: ["Transactions", "Admins"],
+      security: [{ bearerAuth: [] }],
+      body: transactionRef('generateTransactionsSchema'),
+    },
+  },
+    generateTransactionsHandler
   );
 }
