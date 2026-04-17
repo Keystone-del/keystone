@@ -23,16 +23,8 @@ const savingsCore = {
 const createSavingsSchema = z.object({
   user: z.string().optional(),
   title: z.string().min(1),
-  targetAmount: z
-    .number()
-    .int("Target amount must be an integer")
-    .min(1, "Minimum of 100")
-    .optional(),
-  savedAmount: z
-    .number()
-    .int("Save Amount must be an integer")
-    .min(1, "Minimum of 10")
-    .default(0),
+  targetAmount: z.number().int("Target amount must be an integer").min(1, "Minimum of 100").optional(),
+  savedAmount: z.number().int("Save Amount must be an integer").min(1, "Minimum of 10").default(0),
   interestRate: z.number().default(4.4),
   startDate: z.string().datetime(),
   endDate: z.string().datetime().optional(),

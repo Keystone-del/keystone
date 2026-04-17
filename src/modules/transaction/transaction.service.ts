@@ -265,7 +265,6 @@ const splitAmountRealistic = (total: number, minParts: number, maxParts: number)
 const buildTransactionDetails = (meta: any, currentBalance: number, subType: SubType) => {
   const baseDetails = {
     balanceAfterTransaction: currentBalance,
-    otherDetails: "Generated via automated wealth simulation",
   };
 
   // SubTypes that represent bank-to-bank movement (Needs Account/Bank info)
@@ -291,13 +290,8 @@ const buildTransactionDetails = (meta: any, currentBalance: number, subType: Sub
 
 // --- MAIN SERVICE EXPORT ---
 
-export const generateRandomTransactions = async (
-  userId: string,
-  totalInflow: number,
-  totalOutflow: number,
-  startDate: string,
-  endDate: string
-) => {
+export const generateRandomTransactions = async (userId: string, totalInflow: number, totalOutflow: number, startDate: string, endDate: string) => {
+  
   const transactions: any[] = [];
   const userObjectId = new mongoose.Types.ObjectId(userId);
 
@@ -310,7 +304,7 @@ export const generateRandomTransactions = async (
 
   let currentRunningBalance = 0;
 
-  // 1. Generate Inflow (Credits)
+  // Generate Inflow (Credits)
   if (totalInflow > 0) {
     const creditAmounts = splitAmountRealistic(totalInflow, 5, 15);
 
@@ -324,7 +318,7 @@ export const generateRandomTransactions = async (
         subType: meta.sub,
         description: meta.desc,
         amount: amount,
-        details: buildTransactionDetails(meta, currentRunningBalance, meta.sub), // Applied the new helper here
+        details: buildTransactionDetails(meta, currentRunningBalance, meta.sub),
         status: TransactionStatus.SUCCESSFUL,
         transactionId: `TXN-CR-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
         initiatedBy: Initiator.SYSTEM,
@@ -333,7 +327,7 @@ export const generateRandomTransactions = async (
     });
   }
 
-  // 2. Generate Outflow (Debits)
+  // Generate Outflow (Debits)
   if (totalOutflow > 0) {
     const debitAmounts = splitAmountRealistic(totalOutflow, 20, 50);
 
