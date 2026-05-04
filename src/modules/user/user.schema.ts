@@ -188,6 +188,7 @@ export const { schemas: userSchemas, $ref: userRef } = buildJsonSchemas(
     createUserSchema,
     verifyUserSchema,
     editUserSchema,
+    fetchUserSchema,
     updateLocationSchema,
     createUserResponseSchema,
     generalUserResponseSchema,

@@ -107,6 +107,8 @@ const transactionSchema: Schema = new Schema<TransactionDocument>({
   createdAt: { type: Date, default: Date.now },
 });
 
+transactionSchema.index({ user: 1, createdAt: -1 });
+
 const TransactionModel = model<TransactionDocument>(
   "Transaction",
   transactionSchema

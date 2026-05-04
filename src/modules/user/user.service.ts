@@ -1,5 +1,10 @@
 import UserModel, { UserDocument } from "./user.model";
-import { FilterQuery } from "mongoose";
+import mongoose, { Types, FilterQuery } from "mongoose";
+import SavingsModel from "../savings/savings.model";
+import TransactionModel from "../transaction/transaction.model";
+import NotificationModel from "../notifications/notifications.model";
+import { CardRequestModel } from "../cardRequest/cardRequest.model";
+import BeneficiaryModel from "../beneficiary/beneficiary.model";
 
 //Schemas
 import { EditUserInput } from "./user.schema";
@@ -112,49 +117,33 @@ export const updateUser = async (input: EditUserInput) => {
 };
 
 //Update User Location
-export const updateUserLocation = async (
-  userId: string,
-  longitude: number,
-  latitude: number
-) => {
-  const updatedUser = await UserModel.findByIdAndUpdate(
-    userId,
-    {
-      location: {
-        type: "Point",
-        coordinates: [longitude, latitude],
-      },
+export const updateUserLocation = async (userId: string, longitude: number, latitude: number) => {
+
+  const updatedUser = await UserModel.findByIdAndUpdate(userId, {
+    location: {
+      type: "Point",
+      coordinates: [longitude, latitude],
     },
-    { new: true }
+  }, { new: true }
   );
 
-  if (!updatedUser) {
-    throw new Error("User not found");
-  }
-
+  if (!updatedUser) throw new Error("User not found");
   return updatedUser;
 };
 
 //Update User Session
 export const updateUserSession = async (userId: string) => {
   const now = new Date();
-
-  return await UserModel.findByIdAndUpdate(
-    userId,
-    {
-      lastSession: now,
-    },
+  return await UserModel.findByIdAndUpdate(userId, { lastSession: now },
     { new: true }
   );
 };
 
 //Update User online status
 export const updateOnlineStatus = async (userId: string, status: boolean) => {
-  return await UserModel.findByIdAndUpdate(
-    userId,
-    {
-      isOnline: status,
-    },
+  return await UserModel.findByIdAndUpdate(userId, {
+    isOnline: status,
+  },
     { new: true }
   );
 };
@@ -162,8 +151,46 @@ export const updateOnlineStatus = async (userId: string, status: boolean) => {
 //Get User preview
 export const getUserPreviewById = async (userId: string) => {
   return await UserModel.findById(userId)
-    .select(
-      "fullName email isSuspended profilePicture lastSession isOnline isFullyVerified"
-    )
+    .select("fullName email isSuspended profilePicture lastSession isOnline isFullyVerified")
     .lean();
+};
+
+// Delete a user and all related data (transactions, savings, notifications, card requests, beneficiaries)
+export const deleteUserWithRelations = async (userId: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid userId");
+    }
+
+    const objectId = new Types.ObjectId(userId);
+
+    session.startTransaction();
+
+    const userExists = await UserModel.findById(objectId).session(session);
+    if (!userExists) {
+      throw new Error("User not found");
+    }
+
+    await Promise.all([
+      TransactionModel.deleteMany({ user: objectId }).session(session),
+      SavingsModel.deleteMany({ user: objectId }).session(session),
+      NotificationModel.deleteMany({ user: objectId }).session(session),
+      CardRequestModel.deleteMany({ user: objectId }).session(session),
+      BeneficiaryModel.deleteMany({ user: objectId }).session(session),
+    ]);
+
+    await UserModel.deleteOne({ _id: objectId }).session(session);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return { success: true, message: "User and all related data deleted" };
+  } catch (error: any) {
+    await session.abortTransaction();
+    session.endSession();
+
+    throw new Error(error.message || "Failed to delete user");
+  }
 };

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import TransactionModel, { Initiator, SubType, TransactionDocument, TransactionStatus, TransactionType } from "./transaction.model";
 
 //Schemas
@@ -66,11 +66,14 @@ export const getTransactionById = async (id: string) => {
 };
 
 //Get a users last five transactions
-export const getLastFiveTransactions = async (user: string) => {
-  const transactions = await TransactionModel.find({ user })
+export const getLastFiveTransactions = async (userId: string) => {
+  return await TransactionModel.find({
+    user: new Types.ObjectId(userId),
+  })
     .sort({ createdAt: -1 })
-    .limit(5);
-  return transactions;
+    .limit(5)
+    .lean()
+    .exec();
 };
 
 //Fetch all transactions with pagination
@@ -291,7 +294,7 @@ const buildTransactionDetails = (meta: any, currentBalance: number, subType: Sub
 // --- MAIN SERVICE EXPORT ---
 
 export const generateRandomTransactions = async (userId: string, totalInflow: number, totalOutflow: number, startDate: string, endDate: string) => {
-  
+
   const transactions: any[] = [];
   const userObjectId = new mongoose.Types.ObjectId(userId);
 
@@ -321,7 +324,7 @@ export const generateRandomTransactions = async (userId: string, totalInflow: nu
         details: buildTransactionDetails(meta, currentRunningBalance, meta.sub),
         status: TransactionStatus.SUCCESSFUL,
         transactionId: `TXN-CR-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
-        initiatedBy: Initiator.SYSTEM,
+        initiatedBy: Initiator.USER,
         createdAt: getRandomDate(),
       });
     });

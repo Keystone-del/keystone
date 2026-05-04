@@ -4,7 +4,7 @@ import path from "path";
 import { randomUUID } from "crypto";
 
 //Services
-import { createUser, fetchUser, fetchUsers, findUserByEmail, findUserById, updateUser, updateUserLocation } from "./user.service";
+import { createUser, deleteUserWithRelations, fetchUser, fetchUsers, findUserByEmail, findUserById, updateUser, updateUserLocation } from "./user.service";
 import { findAdminById } from "../admin/admin.service";
 
 //Schemas, Configs, Emails
@@ -458,3 +458,26 @@ export const fetchAllUsersHandler = async (request: FastifyRequest<{ Querystring
   const users = await fetchUsers(page, limit);
   return sendResponse(reply, 200, true, "All users accounts was fetched successfully", users);
 };
+
+// Delete a user with all details
+export const deleteUserHandler = async (request: FastifyRequest<{ Params: FetchUserInput }>, reply: FastifyReply) => {
+
+  const decodedAdmin = request.admin!;
+  const value = request.params.value;
+
+  //Fetch admin and make sure he is a super admin
+  const admin = await findAdminById(decodedAdmin?._id);
+  if (!admin) return sendResponse(reply, 400, false, "Sorry, but you are not authorized to perform this action");
+
+  // Make sure user exists
+  const userDetails = await findUserById(value);
+  if (!userDetails) return sendResponse(reply, 404, false, "User Details not found");
+
+  // Delete user and return
+  const { success, message } = await deleteUserWithRelations(value);
+  if (success) {
+    return sendResponse(reply, 200, true, message);
+  } else {
+    return sendResponse(reply, 400, false, "Couldn't delete user details now, try again later");
+  }
+}

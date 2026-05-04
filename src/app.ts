@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance, FastifyRequest, FastifyReply, FastifyError} from "fastify";
+import Fastify, { FastifyInstance, FastifyRequest, FastifyReply, FastifyError } from "fastify";
 import fastifyJwt from "@fastify/jwt";
 import cors from "@fastify/cors";
 import fastifyMultipart from "@fastify/multipart";
@@ -127,14 +127,7 @@ export const buildApp = async (): Promise<FastifyInstance> => {
           return sendResponse(reply, 403, false, "Forbidden: Admins only");
         }
 
-        if (decoded.isSuspended) {
-          return sendResponse(
-            reply,
-            420,
-            false,
-            "Permission denied: You are suspended."
-          );
-        }
+        if (decoded.isSuspended) return sendResponse(reply, 420, false, "Permission denied: You are suspended.");a
       } catch (err) {
         this.log.error(`Admin JWT Error: ${err}`);
         return sendResponse(reply, 401, false, "Unauthorized");

@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 //Handlers
-import { createUserHandler, editUserHandler, fetchAllUsersHandler, fetchCurrentUserHandler, fetchUserHandler, kycUploadHandler, resendVerification, updateProfilePictureHandler, updateUserHandler, verifyUserHandler, } from "./user.controller";
+import { createUserHandler, deleteUserHandler, editUserHandler, fetchAllUsersHandler, fetchCurrentUserHandler, fetchUserHandler, kycUploadHandler, resendVerification, updateProfilePictureHandler, updateUserHandler, verifyUserHandler, } from "./user.controller";
 
 //Schemas
 import { EditUserInput, FetchUserInput, userRef, VerifyUserInput } from "./user.schema";
@@ -150,6 +150,7 @@ export default async function userRoutes(app: FastifyInstance) {
     schema: {
       tags: ["Admins"],
       security: [{ bearerAuth: [] }],
+      params: userRef('fetchUserSchema'),
       response: {
         200: userRef("generalUserResponseSchema"),
         400: generalRef("badRequestSchema"),
@@ -171,5 +172,17 @@ export default async function userRoutes(app: FastifyInstance) {
     },
   },
     fetchAllUsersHandler
+  );
+
+  //Delete user
+  app.delete<{ Params: FetchUserInput }>("/user/:value", {
+    preHandler: app.authenticateAdmin,
+    schema: {
+      tags: ["Users", "Admins"],
+      security: [{ bearerAuth: [] }],
+      params: userRef('fetchUserSchema')
+    },
+  },
+    deleteUserHandler
   );
 }
