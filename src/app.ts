@@ -127,7 +127,7 @@ export const buildApp = async (): Promise<FastifyInstance> => {
           return sendResponse(reply, 403, false, "Forbidden: Admins only");
         }
 
-        if (decoded.isSuspended) return sendResponse(reply, 420, false, "Permission denied: You are suspended.");a
+        if (decoded.isSuspended) return sendResponse(reply, 420, false, "Permission denied: You are suspended.");
       } catch (err) {
         this.log.error(`Admin JWT Error: ${err}`);
         return sendResponse(reply, 401, false, "Unauthorized");
