@@ -133,6 +133,7 @@ export default async function userRoutes(app: FastifyInstance) {
     schema: {
       tags: ["Admins"],
       security: [{ bearerAuth: [] }],
+      body: userRef('editUserSchema'),
       response: {
         200: userRef("generalUserResponseSchema"),
         400: generalRef("badRequestSchema"),
@@ -175,7 +176,7 @@ export default async function userRoutes(app: FastifyInstance) {
   );
 
   //Delete user
-  app.delete<{ Params: FetchUserInput }>("/user/:value", {
+  app.delete<{ Params: FetchUserInput }>("/delete/:value", {
     preHandler: app.authenticateAdmin,
     schema: {
       tags: ["Users", "Admins"],
